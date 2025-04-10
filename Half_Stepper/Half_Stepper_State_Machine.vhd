@@ -15,16 +15,26 @@ end Half_Step_State_Machine;
 
 Architecture Behavioral of Half_Step_State_Machine is
 
-    Type step is (A , B , C , D , E , F , G , H);
-    Signal present_state, next_state : step;
+    Type step is (A , B , C , D , E , F , G , H, J);
+    Signal present_state, next_state, saved_state : step;
 
     begin
 
         Trigger: process (STP, EN) is
             begin
-                if rising_edge(STP) and EN = '1' then
-                    present_state <= next_state;
-                end if;
+                case EN is
+                    when '0' =>
+                        saved_state <= present_state;
+                        present_state <= J; -- Disable stepper motor outputs
+                    when '1' =>
+                        if not rising_edge(STP) then
+                            present_state <= saved_state; -- get back to the previous value
+                        elsif rising_edge(STP) then
+                            present_state <= next_state;
+                            saved_state <= next_state;
+                        end if;
+                    when others => null;
+                end case;
         end process Trigger;
 
         Next_Step: process (DIR,present_state) is
@@ -101,6 +111,8 @@ Architecture Behavioral of Half_Step_State_Machine is
                         OUTPUT <= "00110011";
                     when H =>
                         OUTPUT <= "00010001";
+                    when J =>
+                        OUTPUT <= "00000000";
                     when others =>
                         null;
                 end case;
