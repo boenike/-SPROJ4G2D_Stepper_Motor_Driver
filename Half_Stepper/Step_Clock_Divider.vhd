@@ -4,14 +4,14 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Clock_Divider is
-    Generic (N : integer := 100000); -- Division factor
+    Generic (N : integer := 100000); -- Division factor for 1ms between steps
     Port ( CLK_IN , EN : in STD_LOGIC; -- Input Clock and Reset Signal
         CLK_OUT : out STD_LOGIC -- Divided Clock Output
     );
 end Clock_Divider;
 
 architecture Behavioral of Clock_Divider is
-    signal counter : integer := 0;
+    signal counter : integer range 0 to (N/2) := 0;
     signal clk_div : STD_LOGIC := '0';
     
     begin
