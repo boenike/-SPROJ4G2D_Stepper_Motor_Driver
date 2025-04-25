@@ -22,6 +22,13 @@ Architecture Structural of Half_Stepping_Top is
         );
     end Component;
     
+    Component half_step_rom is
+        Port ( clk, en : in  STD_LOGIC;
+               addr : in  STD_LOGIC_VECTOR(2 downto 0);
+               data : out STD_LOGIC_VECTOR(7 downto 0)
+        );
+    end Component;
+    
     Component Next_Step_Enabler is
         Port ( GCK, STP : in STD_LOGIC;
                NXT_FLAG : out STD_LOGIC
@@ -29,12 +36,13 @@ Architecture Structural of Half_Stepping_Top is
     end Component;
     
     Component Half_Step_State_Machine is
-        Port ( DIR , STP , EN : in STD_LOGIC;
-               OUTPUT : out STD_LOGIC_VECTOR (7 downto 0)
+        Port ( DIR , STP : in STD_LOGIC;
+               addr : out STD_LOGIC_VECTOR (2 downto 0)
         );
     end Component;
     
     Signal CLK_to_STP : STD_LOGIC;
+    Signal state_machine_to_rom_addr : STD_LOGIC_VECTOR(2 downto 0);
 
     begin
         Test_Step_Input: Clock_Divider Port map
@@ -44,6 +52,9 @@ Architecture Structural of Half_Stepping_Top is
         (GCK=>GCK, STP=>CLK_to_STP, NXT_FLAG=>NXT_FLAG);
 
         Half_Stepper_Generator: Half_Step_State_Machine Port map
-        (DIR=>DIR, STP=>CLK_to_STP, EN=>EN, OUTPUT=>OUTPUT);
+        (DIR=>DIR, STP=>CLK_to_STP, addr=>state_machine_to_rom_addr);
+        
+        rom_inst: half_step_rom Port map
+		(clk=>GCK, en=>EN, addr=>state_machine_to_rom_addr, data=>OUTPUT);
 
 end Structural;
