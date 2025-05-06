@@ -8,12 +8,14 @@ end Microstepping_Sequencer_TB;
 architecture Behavioral of Microstepping_Sequencer_TB is
     Component Microstepping_Sequencer is
         Port (
+            STP_EN : STD_LOGIC;  -- Enable STP input
             GCK : in STD_LOGIC;  -- 100MHz clock
             STP : in STD_LOGIC;  -- Step input
             UD : in STD_LOGIC;   -- Rising/Falling
             EN : in STD_LOGIC;   -- Enable
+            PCH_EN : out STD_LOGIC; -- Enable output for the P-channel MOSFET to turn on - to avoid shorting
             OUTPUT : out STD_LOGIC  -- Output pulse
-    );
+        );
     end Component;
     
     constant ClockFrequency : integer := 100e6; -- 100 MHz
@@ -22,13 +24,15 @@ architecture Behavioral of Microstepping_Sequencer_TB is
 
     Signal GCK: STD_LOGIC := '1' ;
     Signal STP: STD_LOGIC := '0';
-    Signal UD: STD_LOGIC := '0' ;   -- Rising
-    Signal EN: STD_LOGIC := '1' ;   -- Output Enabled
+    Signal UD: STD_LOGIC := '0' ;       -- Rising
+    Signal EN: STD_LOGIC := '1' ;       -- Output Enabled
+    Signal STP_EN: STD_LOGIC := '1' ;   -- Step input Enabled
     Signal OUTPUT : STD_LOGIC;
+    Signal PCH_EN : STD_LOGIC;
     
     begin
         uut: Microstepping_Sequencer Port map
-        (EN=>EN, UD=>UD, STP=>STP, GCK=>GCK, OUTPUT=>OUTPUT);
+        (EN=>EN, STP_EN=>STP_EN, UD=>UD, STP=>STP, GCK=>GCK, OUTPUT=>OUTPUT, PCH_EN=>PCH_EN);
         
         CLOCK: process (GCK) is
             begin

@@ -5,10 +5,12 @@ use IEEE.NUMERIC_STD.ALL;
 entity Microstepping_Sequencer is
     Generic(PULSE_DURATION: integer := 100_000);    -- 1ms in clock cycles (100MHz * 1ms)
     Port (
+        STP_EN : STD_LOGIC;  -- Enable STP input
         GCK : in STD_LOGIC;  -- 100MHz clock
         STP : in STD_LOGIC;  -- Step input
         UD : in STD_LOGIC;   -- Rising/Falling
         EN : in STD_LOGIC;   -- Enable
+        PCH_EN : out STD_LOGIC; -- Enable output for the P-channel MOSFET to turn on - to avoid shorting
         OUTPUT : out STD_LOGIC  -- Output pulse
     );
 end Microstepping_Sequencer;
@@ -30,15 +32,16 @@ architecture Behavioral of Microstepping_Sequencer is
             begin
                 if EN = '0' then
                     OUTPUT <= '0';
+                    PCH_EN <= '1';
                 elsif EN = '1' and rising_edge(GCK) then
                     OUTPUT <= OUTPUT_Saved;
-                    -- Detect rising edge of STP
-                    if STP = '1' and stp_prev = '0' then
+                    -- Detect falling edge of STP
+                    if STP_EN = '1' and STP = '0' and stp_prev = '1' then
                         active <= true;
                         pulse_count <= 0;
                         cycle_count <= 0;
                         rom_index <= 0;
-                        --OUTPUT <= '0';
+                        PCH_EN <= '0';
                     end if;
                     stp_prev := STP;
         
@@ -68,7 +71,7 @@ architecture Behavioral of Microstepping_Sequencer is
                                 rom_index <= rom_index + 1;
                             else
                                 active <= false;
-                                --OUTPUT <= '0';
+                                PCH_EN <= '1';
                             end if;
                         end if;
                     --else
