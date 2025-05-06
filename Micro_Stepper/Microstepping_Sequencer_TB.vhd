@@ -1,3 +1,10 @@
+-- Description: Microstep Sequencer
+-- Author: Bence Toth
+-- Group: 2D
+-- Semester: 4th
+-- Course: BEng in Electronics
+-- Institution: SDU Sonderborg
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -8,13 +15,13 @@ end Microstepping_Sequencer_TB;
 architecture Behavioral of Microstepping_Sequencer_TB is
     Component Microstepping_Sequencer is
         Port (
-            STP_EN : STD_LOGIC;  -- Enable STP input
-            GCK : in STD_LOGIC;  -- 100MHz clock
-            STP : in STD_LOGIC;  -- Step input
-            UD : in STD_LOGIC;   -- Rising/Falling
-            EN : in STD_LOGIC;   -- Enable
-            PCH_EN : out STD_LOGIC; -- Enable output for the P-channel MOSFET to turn on - to avoid shorting
-            OUTPUT : out STD_LOGIC  -- Output pulse
+            STP_EN : STD_LOGIC;     -- Enable STP input
+            GCK : in STD_LOGIC;     -- 100MHz clock
+            STP : in STD_LOGIC;     -- Step input
+            UD : in STD_LOGIC;      -- Rising/Falling sequence
+            EN : in STD_LOGIC;      -- Global enable
+            PCH : out STD_LOGIC;    -- Output for the P-channel MOSFET counterpart
+            NCH : out STD_LOGIC     -- Output pulse for the N-channel MOSFET
         );
     end Component;
     
@@ -24,15 +31,15 @@ architecture Behavioral of Microstepping_Sequencer_TB is
 
     Signal GCK: STD_LOGIC := '1' ;
     Signal STP: STD_LOGIC := '0';
-    Signal UD: STD_LOGIC := '0' ;       -- Rising
+    Signal UD: STD_LOGIC := '1' ;       -- Falling
     Signal EN: STD_LOGIC := '1' ;       -- Output Enabled
     Signal STP_EN: STD_LOGIC := '1' ;   -- Step input Enabled
-    Signal OUTPUT : STD_LOGIC;
-    Signal PCH_EN : STD_LOGIC;
+    Signal NCH : STD_LOGIC;
+    Signal PCH : STD_LOGIC;
     
     begin
         uut: Microstepping_Sequencer Port map
-        (EN=>EN, STP_EN=>STP_EN, UD=>UD, STP=>STP, GCK=>GCK, OUTPUT=>OUTPUT, PCH_EN=>PCH_EN);
+        (EN=>EN, STP_EN=>STP_EN, UD=>UD, STP=>STP, GCK=>GCK, NCH=>NCH, PCH=>PCH);
         
         CLOCK: process (GCK) is
             begin
@@ -46,19 +53,17 @@ architecture Behavioral of Microstepping_Sequencer_TB is
                 wait for 30ns;
                     STP <= '0';
                 wait for waitPeriod + 1ms;
-                    UD <= '1';
                     EN <= '0';
-                    STP <= '1';
-                wait for 30ns;
-                    STP <= '0';
                 wait for 4ms;
                     EN <= '1';
+                    UD <= '0';
                 wait for 1ms;
                     STP <= '1';
                 wait for 30ns;
                     STP <= '0';
-                wait for waitPeriod + 1ms;
-                    UD <= '0';
+                wait for 1ms;
+                    UD <= '1';
+                wait for waitPeriod;
                     STP <= '1';
                 wait for 30ns;
                     STP <= '0';
