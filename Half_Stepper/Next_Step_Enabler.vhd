@@ -7,7 +7,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity Next_Step_Enabler is
-    Generic (COOLDOWN_TIME : integer := 99_000); -- 0.99 ms in clock cycles (99000 cycles)
+    Generic (COOLDOWN_TIME : integer := 800_020); -- clock cycles
     Port ( GCK, STP : in STD_LOGIC;
            NXT_FLAG : out STD_LOGIC
     );
@@ -15,7 +15,7 @@ end Next_Step_Enabler;
 
 architecture Behavioral of Next_Step_Enabler is
     
-    signal counter : unsigned(16 downto 0) := (others => '0');  -- used to count to the desired time
+    signal counter : unsigned(20 downto 0) := (others => '0');  -- used to count to the desired time
     signal stp_prev : STD_LOGIC := '0';         -- used to store the STP input value
     -- this is needed to counteract the error stated by VHDL due to nested clocks
     signal timer_active : STD_LOGIC := '0';     -- signal used to start and stop the cooldown timer

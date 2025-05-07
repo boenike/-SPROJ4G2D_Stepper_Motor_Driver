@@ -31,7 +31,7 @@ architecture Behavioral of half_step_rom is
 		Read_Val: process(clk, en) is
 			begin
 			    if en = '0' then
-			        data <= "00000000";
+			        data <= "11111111";
 				elsif en = '1' and rising_edge(clk) then
 					data <= OUT_ROM(to_integer(unsigned(addr)));
 				end if;

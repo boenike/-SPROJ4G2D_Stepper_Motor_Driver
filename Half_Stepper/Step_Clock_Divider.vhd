@@ -4,7 +4,7 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Clock_Divider is
-    Generic (N : integer := 100000); -- Division factor for 1ms between steps
+    Generic (N : integer := 850_000); -- Division factor for in between steps
     Port ( CLK_IN , EN : in STD_LOGIC; -- Input Clock and Reset Signal
         CLK_OUT : out STD_LOGIC -- Divided Clock Output
     );
