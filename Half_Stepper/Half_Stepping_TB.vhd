@@ -17,7 +17,7 @@ architecture Behavioral of Half_Stepping_TB is
 
     constant ClockFrequency : integer := 100e6; -- 100 MHz
     constant ClockPeriod    : time    := 1000 ms / ClockFrequency;
-    constant waitPeriod     : time    := 1.2 ms;
+    constant waitPeriod     : time    := 8.7 ms;
 
     Signal GCK: STD_LOGIC := '1' ;
     Signal DIR: STD_LOGIC := '1' ;  -- Forward
@@ -45,5 +45,6 @@ architecture Behavioral of Half_Stepping_TB is
                     EN <= '0';
                 wait for 8*waitPeriod;
                     EN <= '1';
+                wait;
         end process Testbench;
 end Behavioral;
