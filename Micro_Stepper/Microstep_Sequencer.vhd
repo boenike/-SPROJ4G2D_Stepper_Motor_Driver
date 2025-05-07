@@ -18,6 +18,8 @@ entity Microstep_Sequencer is
         STP : in STD_LOGIC;     -- Step input
         UD : in STD_LOGIC;      -- Rising/Falling sequence
         EN : in STD_LOGIC;      -- Global enable
+        SETUP_TYPE : in STD_LOGIC;   -- pin used to set the type of setup pinouts
+        SETUP_TRIG : in STD_LOGIC;   -- pin used to set the outputs to the default state
         PCH : out STD_LOGIC;    -- Output for the P-channel MOSFET counterpart
         NCH : out STD_LOGIC  -- Output pulse for the N-channel MOSFET
     );
@@ -29,6 +31,7 @@ architecture Behavioral of Microstep_Sequencer is
     constant TOTAL_PULSES : integer range 0 to 8 := 8;  -- 8 pulses
     
     signal UD_Saved : STD_LOGIC;
+    signal SETUP_TRIG_Saved : STD_LOGIC;
     signal NCH_Saved : STD_LOGIC := '1';
     signal PCH_Saved : STD_LOGIC := '1';
     signal pulse_count : integer range 0 to (TOTAL_PULSES - 1) := 0;
@@ -37,64 +40,81 @@ architecture Behavioral of Microstep_Sequencer is
     signal rom_index : integer range 0 to (TOTAL_PULSES - 1) := 0;
     
     begin
-        Microstepping_Sequencer: process(GCK, EN) is
+    
+        Microstepping_Sequencer: process(GCK, EN, SETUP_TRIG) is
             variable stp_prev : STD_LOGIC := '0';
             begin
-                if EN = '0' then
-                    NCH <= '1';
-                    PCH <= '1';
+                if rising_edge(GCK) then
+                    SETUP_TRIG_Saved <= SETUP_TRIG;
                     
-                elsif EN = '1' and rising_edge(GCK) then
-                    NCH <= NCH_Saved;
-                    PCH <= PCH_Saved;
-                    
-                    -- Detect falling edge of STP
-                    if STP_EN = '1' and STP = '0' and stp_prev = '1' then
-                        UD_Saved <= UD;
-                        active <= true;
-                        pulse_count <= 0;
-                        cycle_count <= 0;
-                        rom_index <= 0;
-                        
-                        -- Reset P-Ch MOSFET when it is a falling trigger
-                        if UD = '1' then
-                            PCH_Saved <= '0';
-                        end if;
-                        
+                    -- Detech rising edge of SETUP_TRIG
+                    if SETUP_TRIG = '1' and SETUP_TRIG_Saved = '0' then
+                        case SETUP_TYPE is
+                            when '0' =>
+                                NCH_Saved <= '0';
+                                PCH_Saved <= '0';
+                            when '1' =>
+                                NCH_Saved <= '1';
+                                PCH_Saved <= '1';
+                            when others => null;
+                        end case;
                     end if;
                     
-                    stp_prev := STP;
-        
-                    if active then
-                        -- Generate 1ms pulse
-                        if cycle_count < (PULSE_DURATION - 1) then
-                            cycle_count <= cycle_count + 1;
-                            
-                            -- Set output based on ROM duty cycle
-                            if UD_Saved = '0' then        -- Rising
-                                if cycle_count < ROM(rom_index) then
-                                    NCH_Saved <= '1';
-                                else
-                                    NCH_Saved <= '0';
-                                end if;
-                            else                    -- Falling
-                                if cycle_count < ROM(TOTAL_PULSES - 1 - rom_index) then
-                                    NCH_Saved <= '1';
-                                else
-                                    NCH_Saved <= '0';
-                                end if;
-                            end if;
-                        else
+                    if EN = '0' then
+                        NCH <= '1';
+                        PCH <= '1';
+                        
+                    elsif EN = '1' then
+                        NCH <= NCH_Saved;
+                        PCH <= PCH_Saved;
+                        
+                        -- Detect falling edge of STP
+                        if STP_EN = '1' and STP = '0' and stp_prev = '1' then
+                            UD_Saved <= UD;
+                            active <= true;
+                            pulse_count <= 0;
                             cycle_count <= 0;
-                            if pulse_count < (TOTAL_PULSES - 1) then
-                                pulse_count <= pulse_count + 1;
-                                rom_index <= rom_index + 1;
+                            rom_index <= 0;
+                            
+                            -- Reset P-Ch MOSFET when it is a falling trigger
+                            if UD = '1' then
+                                PCH_Saved <= '0';
+                            end if;
+                        end if;
+                        
+                        stp_prev := STP;
+            
+                        if active then      -- Start the sequence
+                            -- Generate 1ms pulse
+                            if cycle_count < (PULSE_DURATION - 1) then
+                                cycle_count <= cycle_count + 1;
+                                
+                                -- Set output based on ROM duty cycle
+                                if UD_Saved = '0' then        -- Rising
+                                    if cycle_count < ROM(rom_index) then
+                                        NCH_Saved <= '1';
+                                    else
+                                        NCH_Saved <= '0';
+                                    end if;
+                                else                    -- Falling
+                                    if cycle_count < ROM(TOTAL_PULSES - 1 - rom_index) then
+                                        NCH_Saved <= '1';
+                                    else
+                                        NCH_Saved <= '0';
+                                    end if;
+                                end if;
                             else
-                                active <= false;
-                                -- Set P-Ch MOSFET after the pulses
-                                -- when it is a rising trigger
-                                if UD_Saved = '0' then
-                                    PCH_Saved <= '1';
+                                cycle_count <= 0;
+                                if pulse_count < (TOTAL_PULSES - 1) then
+                                    pulse_count <= pulse_count + 1;
+                                    rom_index <= rom_index + 1;
+                                else
+                                    active <= false;
+                                    -- Set P-Ch MOSFET after the pulses
+                                    -- when it is a rising trigger
+                                    if UD_Saved = '0' then
+                                        PCH_Saved <= '1';
+                                    end if;
                                 end if;
                             end if;
                         end if;

@@ -11,7 +11,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity Next_Step_Enabler is
-    Generic (COOLDOWN_TIME : integer := 800_000); -- 8 ms in clock cycles
+    Generic (COOLDOWN_TIME : integer := 800_020); -- roughly 8 ms in clock cycles
     Port ( GCK, STP : in STD_LOGIC;
            NXT_FLAG : out STD_LOGIC
     );
