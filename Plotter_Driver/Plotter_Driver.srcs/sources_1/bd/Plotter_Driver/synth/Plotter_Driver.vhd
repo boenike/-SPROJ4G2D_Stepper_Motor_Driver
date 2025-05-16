@@ -1,8 +1,8 @@
 --Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2019.1 (win64) Build 2552052 Fri May 24 14:49:42 MDT 2019
---Date        : Thu May 15 16:10:09 2025
---Host        : BoenikeLaptop running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
+--Date        : Fri May 16 14:33:37 2025
+--Host        : arch-btw running 64-bit Arch Linux
 --Command     : generate_target Plotter_Driver.bd
 --Design      : Plotter_Driver
 --Purpose     : IP block netlist

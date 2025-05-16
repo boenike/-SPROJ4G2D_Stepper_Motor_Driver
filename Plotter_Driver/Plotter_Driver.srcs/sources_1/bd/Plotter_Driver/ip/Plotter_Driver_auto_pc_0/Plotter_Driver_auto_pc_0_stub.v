@@ -1,10 +1,10 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2019.1 (win64) Build 2552052 Fri May 24 14:49:42 MDT 2019
-// Date        : Thu May 15 16:11:23 2025
+// Date        : Thu May 15 16:11:22 2025
 // Host        : BoenikeLaptop running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               c:/Users/benci/Documents/University/SEM4/SPROJ4/Software/Plotter_Driver/Plotter_Driver.srcs/sources_1/bd/Plotter_Driver/ip/Plotter_Driver_auto_pc_0/Plotter_Driver_auto_pc_0_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top Plotter_Driver_auto_pc_0 -prefix
+//               Plotter_Driver_auto_pc_0_ Plotter_Driver_auto_pc_0_stub.v
 // Design      : Plotter_Driver_auto_pc_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg484-1

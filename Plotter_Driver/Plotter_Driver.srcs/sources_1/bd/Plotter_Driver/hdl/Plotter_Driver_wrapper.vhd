@@ -1,8 +1,8 @@
 --Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2019.1 (win64) Build 2552052 Fri May 24 14:49:42 MDT 2019
---Date        : Thu May 15 16:10:09 2025
---Host        : BoenikeLaptop running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
+--Date        : Fri May 16 14:33:37 2025
+--Host        : arch-btw running 64-bit Arch Linux
 --Command     : generate_target Plotter_Driver_wrapper.bd
 --Design      : Plotter_Driver_wrapper
 --Purpose     : IP block netlist
@@ -44,6 +44,16 @@ end Plotter_Driver_wrapper;
 architecture STRUCTURE of Plotter_Driver_wrapper is
   component Plotter_Driver is
   port (
+    GCK_0 : in STD_LOGIC;
+    OUT_1_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
+    OUT_2_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
+    PWM_OUT_0 : out STD_LOGIC;
+    FIXED_IO_mio : inout STD_LOGIC_VECTOR ( 53 downto 0 );
+    FIXED_IO_ddr_vrn : inout STD_LOGIC;
+    FIXED_IO_ddr_vrp : inout STD_LOGIC;
+    FIXED_IO_ps_srstb : inout STD_LOGIC;
+    FIXED_IO_ps_clk : inout STD_LOGIC;
+    FIXED_IO_ps_porb : inout STD_LOGIC;
     DDR_cas_n : inout STD_LOGIC;
     DDR_cke : inout STD_LOGIC;
     DDR_ck_n : inout STD_LOGIC;
@@ -58,17 +68,7 @@ architecture STRUCTURE of Plotter_Driver_wrapper is
     DDR_dm : inout STD_LOGIC_VECTOR ( 3 downto 0 );
     DDR_dq : inout STD_LOGIC_VECTOR ( 31 downto 0 );
     DDR_dqs_n : inout STD_LOGIC_VECTOR ( 3 downto 0 );
-    DDR_dqs_p : inout STD_LOGIC_VECTOR ( 3 downto 0 );
-    FIXED_IO_mio : inout STD_LOGIC_VECTOR ( 53 downto 0 );
-    FIXED_IO_ddr_vrn : inout STD_LOGIC;
-    FIXED_IO_ddr_vrp : inout STD_LOGIC;
-    FIXED_IO_ps_srstb : inout STD_LOGIC;
-    FIXED_IO_ps_clk : inout STD_LOGIC;
-    FIXED_IO_ps_porb : inout STD_LOGIC;
-    GCK_0 : in STD_LOGIC;
-    OUT_1_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    OUT_2_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    PWM_OUT_0 : out STD_LOGIC
+    DDR_dqs_p : inout STD_LOGIC_VECTOR ( 3 downto 0 )
   );
   end component Plotter_Driver;
 begin

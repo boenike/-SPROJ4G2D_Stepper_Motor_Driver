@@ -7,7 +7,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity Next_Step_Enabler_Halfstep is
-    Generic (COOLDOWN_TIME : integer := 100_020); -- clock cycles
+    Generic (COOLDOWN_TIME : integer := 500_020); -- clock cycles
     Port ( GCK, STP : in STD_LOGIC;
            NXT_FLAG : out STD_LOGIC
     );
@@ -24,18 +24,10 @@ architecture Behavioral of Next_Step_Enabler_Halfstep is
 	begin
 		Next_Step_Process: process(GCK) is
 			begin
-				if rising_edge(GCK) then
-					stp_prev <= STP;
-
-					-- Detect rising edge on STP
-					if STP = '1' and stp_prev = '0' then
-					    -- reset output flag, zero out the counter value and start timer
-						timer_active <= '1';
-						nxt_flag_int <= '0';
-						counter <= (others => '0');
-					end if;
-
-					-- Timer logic
+			    if falling_edge(GCK) then
+			        stp_prev <= STP;
+			        
+			        -- Timer logic
 					if timer_active = '1' then
 						if counter < ( COOLDOWN_TIME - 1 ) then
 						    -- increment the counter
@@ -45,6 +37,15 @@ architecture Behavioral of Next_Step_Enabler_Halfstep is
 							timer_active <= '0';
 							nxt_flag_int <= '1';
 						end if;
+					end if;
+			    end if;
+				if rising_edge(GCK) then
+					-- Detect rising edge on STP
+					if STP = '1' and stp_prev = '0' then
+					    -- reset output flag, zero out the counter value and start timer
+						timer_active <= '1';
+						nxt_flag_int <= '0';
+						counter <= (others => '0');
 					end if;
 				end if;
 		end process Next_Step_Process;
