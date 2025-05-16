@@ -109,7 +109,7 @@ architecture Behavioral of Microstep_Fetcher is
     
         ROM_Outputs: process (GCK, addr, DIR) is
             begin
-                if rising_edge(GCK) then
+                if falling_edge(GCK) then
                     case DIR is
                         when '0' =>     -- Forward
                             STPEN_OUT_int_sig <= STPEN_OUT_ROM_FORWARD(to_integer(unsigned(addr)));

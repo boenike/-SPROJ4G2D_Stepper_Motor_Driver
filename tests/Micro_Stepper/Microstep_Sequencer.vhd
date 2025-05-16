@@ -47,7 +47,7 @@ architecture Behavioral of Microstep_Sequencer is
                 if rising_edge(GCK) then
                     SETUP_TRIG_Saved <= SETUP_TRIG;
                     
-                    -- Detech rising edge of SETUP_TRIG
+                    -- Detect rising edge of SETUP_TRIG
                     if SETUP_TRIG = '1' and SETUP_TRIG_Saved = '0' then
                         case SETUP_TYPE is
                             when '0' =>
