@@ -1,8 +1,8 @@
 # SPROJ4 Group 2D - Plotter Driver
 
-It contains the VHDL code for driving the two stepper motors and the servo.
-
 This program is part of Group 2D's semester project titled: "2D plotter"
+
+It contains the Vivado source files required for driving the two stepper motors and the servo.
 
 Institution: University of Southern Denmark (SDU)
 
