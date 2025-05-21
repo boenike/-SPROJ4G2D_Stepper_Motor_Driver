@@ -1,5 +1,6 @@
-#define SCALE 100
-#define MOTOR_COOLDOWN 32000
+#define SCALE 20
+#define MOTOR_COOLDOWN 50000
+#define HOMING_SPEED 120000
 
 #define MOTOR_ROTATION (400)
 

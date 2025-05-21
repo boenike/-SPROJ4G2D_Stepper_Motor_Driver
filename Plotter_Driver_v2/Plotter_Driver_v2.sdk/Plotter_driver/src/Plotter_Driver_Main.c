@@ -215,7 +215,7 @@ void home_motors(void)
 {
 #define mm(x, y) move_motors_v(mat2_vec2_mul(context.m, (Vec2){(x), (y)}))
 
-	set_speed(100000);
+	set_speed(HOMING_SPEED);
 
 	while (MOTOR_BASE[0] & LIMIT_SWITCH_A_BIT)
 	{
@@ -241,9 +241,8 @@ int main()
 
 //    volatile unsigned int *motor = (volatile unsigned int *)0x43C000000;
 
-    MOTOR_BASE[0] = motor_state;
-
     motor_state |= MOTOR_ENABLE_BIT;
+    MOTOR_BASE[0] = motor_state;
 
     set_speed_max();
 
@@ -257,16 +256,20 @@ int main()
 
 //    printf("loop_count: %d\n", loop_count);
 
+    /*
     f32 current_angle = 0;
     f32 angle_step = (PI32*2)/2000;
     f32 radius = 1000;
+    */
 
     Mat2 scale = mat2_scale(SCALE);
     Mat2 rot = mat2_rot(PI32/4);
 
     context.m = mat2_mul(scale, rot);
     
-    b32 servo_down = false;
+    //b32 servo_down = false;
+
+    u32 ctr = 0, en_state = 1;
 
 #define mm(x, y) move_motors_v(mat2_vec2_mul(context.m, (Vec2){(x), (y)}))
 
@@ -286,6 +289,15 @@ int main()
 			mm(-100, 100);
 			mm(-100, -100);
 			mm(100, -100);
+
+			// Short test of EN
+			ctr++;
+			if (2 == ctr) {
+				ctr = 0;
+				en_state = !en_state;
+				motor_state = en_state > 0 ? motor_state | MOTOR_ENABLE_BIT : motor_state & ~MOTOR_ENABLE_BIT;
+				MOTOR_BASE[0] = motor_state;
+			}
     	}
     }
 
