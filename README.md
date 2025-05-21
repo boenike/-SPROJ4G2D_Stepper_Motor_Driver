@@ -1,4 +1,4 @@
-# SPROJ4 Group 2D - Plotter Driver
+# SPROJ4EE Group 2D - Plotter Driver
 
 This repo is part of Group 2D's semester project titled: "2D plotter"
 
