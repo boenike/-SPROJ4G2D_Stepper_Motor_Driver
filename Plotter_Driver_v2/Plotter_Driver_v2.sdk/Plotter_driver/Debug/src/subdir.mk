@@ -8,14 +8,17 @@ LD_SRCS += \
 
 C_SRCS += \
 ../src/Plotter_Driver_Main.c \
+../src/globals.c \
 ../src/platform.c 
 
 OBJS += \
 ./src/Plotter_Driver_Main.o \
+./src/globals.o \
 ./src/platform.o 
 
 C_DEPS += \
 ./src/Plotter_Driver_Main.d \
+./src/globals.d \
 ./src/platform.d 
 
 

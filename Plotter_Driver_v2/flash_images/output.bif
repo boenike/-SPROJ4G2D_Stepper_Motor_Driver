@@ -1,7 +1,7 @@
 //arch = zynq; split = false; format = BIN
 the_ROM_image:
 {
-	[bootloader]C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\Plotter_Driver_v2\Plotter_Driver_v2.sdk\First_Stage_Boot_Loader\Debug\First_Stage_Boot_Loader.elf
-	C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\Plotter_Driver_v2\Plotter_Driver_v2.runs\impl_1\Block_Design_wrapper.bit
-	C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Plotter_driver\Debug\Plotter_driver.elf
+	[bootloader]C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\SPROJ4G2D_Plotter_Driver\Plotter_Driver_v2\Plotter_Driver_v2.sdk\First_Stage_Boot_Loader\Debug\First_Stage_Boot_Loader.elf
+	C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\SPROJ4G2D_Plotter_Driver\Plotter_Driver_v2\Plotter_Driver_v2.runs\impl_1\Block_Design_wrapper.bit
+	C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\SPROJ4G2D_Plotter_Driver\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Plotter_driver\Debug\Plotter_driver.elf
 }

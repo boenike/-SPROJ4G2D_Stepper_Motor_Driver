@@ -18,7 +18,7 @@ src/fsbl_hooks.o src/fsbl_hooks.o: ../src/fsbl_hooks.c ../src/fsbl.h \
  ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xstatus.h \
  ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xil_assert.h \
  ../src/fsbl_debug.h \
- C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Block_Design_wrapper_hw_platform_0/ps7_init.h \
+ C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\SPROJ4G2D_Plotter_Driver\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Block_Design_wrapper_hw_platform_0/ps7_init.h \
  ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xstatus.h \
  ../src/fsbl_hooks.h
 ../src/fsbl.h:
@@ -41,6 +41,6 @@ src/fsbl_hooks.o src/fsbl_hooks.o: ../src/fsbl_hooks.c ../src/fsbl.h \
 ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xstatus.h:
 ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xil_assert.h:
 ../src/fsbl_debug.h:
-C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Block_Design_wrapper_hw_platform_0/ps7_init.h:
+C:\Users\benci\Documents\University\SEM4\SPROJ4\Software\SPROJ4G2D_Plotter_Driver\Plotter_Driver_v2\Plotter_Driver_v2.sdk\Block_Design_wrapper_hw_platform_0/ps7_init.h:
 ../../First_Stage_Boot_Loader_bsp/ps7_cortexa9_0/include/xstatus.h:
 ../src/fsbl_hooks.h:
