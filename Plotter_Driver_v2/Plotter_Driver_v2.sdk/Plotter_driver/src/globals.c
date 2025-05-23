@@ -138,9 +138,14 @@ void enable_motors(b32 state)
 	MOTOR_BASE[0] = motor_state;
 }
 
+b32 get_pen_state(void)
+{
+	return (motor_state & MOTOR_SERVO_BIT) != MOTOR_SERVO_BIT;
+}
+
 void set_pen_state(b32 down)
 {
-	motor_state = down ? motor_state | MOTOR_SERVO_BIT : motor_state & ~MOTOR_SERVO_BIT;
+	motor_state = !down ? motor_state | MOTOR_SERVO_BIT : motor_state & ~MOTOR_SERVO_BIT;
 	MOTOR_BASE[0] = motor_state;
 
 	for (u32 i = 0; i < SERVO_DELAY;++i);
@@ -173,20 +178,27 @@ void step_motors(b32 a_dir, b32 b_dir, b32 a_step, b32 b_step)
 
 void move_motors(b32 a_dir, b32 b_dir, u32 a_steps, u32 b_steps)
 {
-	b32 flip = a_steps > b_steps;
-	if (flip)
+	if (a_steps > b_steps)
 	{
-		u32 temp = a_steps;
-		a_steps = b_steps;
-		b_steps = temp;
+		u32 steps_per_step = b_steps ? a_steps/b_steps : 0;
+		for (u32 i = 0; i < a_steps; ++i)
+		{
+			b32 b_step = false;
+			if (steps_per_step) b_step = i % steps_per_step == 0;
+
+			step_motors(a_dir, b_dir, true, b_step);
+		}
 	}
-
-	u32 steps_per_step = b_steps/a_steps;
-	for (u32 i = 0; i < b_steps; ++i)
+	else
 	{
-		b32 a_step = i % steps_per_step == 0;
+		u32 steps_per_step = a_steps ? b_steps/a_steps : 0;
+		for (u32 i = 0; i < b_steps; ++i)
+		{
+			b32 a_step = false;
+			if (steps_per_step) a_step = i % steps_per_step == 0;
 
-		step_motors(!flip ? b_dir : a_dir, !flip ? a_dir : b_dir, flip ? true : a_step, flip ? a_step : true);
+			step_motors(a_dir, b_dir, a_step, true);
+		}
 	}
 }
 

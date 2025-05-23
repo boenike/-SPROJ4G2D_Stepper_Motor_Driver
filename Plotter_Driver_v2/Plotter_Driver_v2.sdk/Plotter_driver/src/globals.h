@@ -1,6 +1,6 @@
 #define SCALE (1000.f/69.f)   	// a ratio of steps/millimeter
 #define MOTOR_COOLDOWN_FASTEST 30000
-#define MOTOR_COOLDOWN_DEFAULT 50000
+#define MOTOR_COOLDOWN_DEFAULT 70000
 #define MOTOR_COOLDOWN_HOMING 120000
 #define SERVO_DELAY 30000000
 
@@ -67,6 +67,7 @@ f32 sin_n(f32 x);
 void set_speed_max(void);
 void set_speed(u32 speed);
 void wait_for_motors();
+b32 get_pen_state(void);
 void set_pen_state(b32 down);
 void step_motors(b32 a_dir, b32 b_dir, b32 a_step, b32 b_step);
 void move_motors(b32 a_dir, b32 b_dir, u32 a_steps, u32 b_steps);
