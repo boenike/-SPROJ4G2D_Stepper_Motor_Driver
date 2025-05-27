@@ -7,24 +7,25 @@
 #include "xparameters.h"
 #include "xil_io.h"
 #include "globals.h"
+#include "gcode.h"
 
 Context context = {0};
 
-Vec2 art[] = {
-	(Vec2){0,0},
-	(Vec2){0,50},
-	(Vec2){50,50},
-	(Vec2){50,150},
-	(Vec2){100,150},
-	(Vec2){100,50},
-	(Vec2){150,50},
-	(Vec2){150,0},
-	(Vec2){0,0},
+v2 art[] = {
+	(v2){0,0},
+	(v2){0,50},
+	(v2){50,50},
+	(v2){50,150},
+	(v2){100,150},
+	(v2){100,50},
+	(v2){150,50},
+	(v2){150,0},
+	(v2){0,0},
 };
 
 typedef struct Point
 {
-	Vec2 pos;
+	v2 pos;
 	b32 pen;
 } Point;
 
@@ -73,46 +74,84 @@ b32 pens[] = {
 	1,
 };
 
+int offset = 0;
+char line[4096];
+
+int read_line()
+{
+	char c;
+
+	offset = 0;
+
+	do
+	{
+		c = fgetc(stdin);
+		line[offset++] = c;
+	} while (c != '\n' && c != '\r');
+	line[offset] = 0;
+
+	return offset;
+}
+
+Tokenizer t = {0};
+
 int main(void)
 {
     init_platform();
+
     enable_motors(true);
+    set_pen_state(false);
 
     set_speed_max();
 
     fflush(stdin);
 
-    Mat2 scale = mat2_scale(SCALE);
-    Mat2 rot = mat2_rot(PI32/4);
+    m2 scale = m2_scale(SCALE);
+    m2 rot = m2_rot(PI32/4);
 
-    context.m = mat2_mul(scale, rot);
+    context.m = m2_mul(scale, rot);
 
-#define mm(x, y) move_motors_v(mat2_vec2_mul(context.m, (Vec2){(x), (y)}))
+    home_motors();
 
-    while(1)
+#define mm(x, y) move_motors_v(m2_v2_mul(context.m, (v2){(x), (y)}))
+
+    while (1)
     {
-    	set_pen_state(false);
-    	home_motors();
-
-    	mm(0, 50);
-
-    	for (u32 i = 0; i < ArrayCount(art2); ++i)
+        int cmd_len = 0;
+    	printf("a");
+    	fflush(stdout);
+    	if ((cmd_len = read_line()))
     	{
-    		if (art2[i].pen != get_pen_state()) set_pen_state(art2[i].pen);
-    		Vec2 motion = vec2_sub(art2[i].pos, context.current_pos);
-    		Vec2 motion2 = mat2_vec2_mul(context.m, motion);
-    		move_motors_v(motion2);
-    		context.current_pos = art2[i].pos;
+    		t.i = 0;
+    		t.src = (String){.length=cmd_len, .data=(u8*)line};
+    		Command cmd = parse_command(&t);
+
+            switch (cmd.type)
+            {
+                case Command_Move: {
+                    if (cmd.pen_state_changed) set_pen_state(cmd.pen_state);
+                    v2 motion = v2_sub(cmd.motion, context.current_pos);
+                    v2 motion_t = m2_v2_mul(context.m, motion);
+                    move_motors_v(motion_t);
+                    context.current_pos = cmd.motion;
+                } break;
+                case Command_Home: {
+                    home_motors();
+                } break;
+                case Command_Set_Pen_State: {
+                    set_pen_state(cmd.pen_state); 
+                } break;
+                case Command_End: {
+                    set_pen_state(false);
+                    home_motors();
+                    enable_motors(false);
+                } break;
+            }
     	}
-
-    	set_pen_state(false);
-		home_motors();
-
-    	enable_motors(false);
-    	set_pen_state(0);
-
-    	while(1);
     }
+
+    
+    while(1);
 
 #undef mm
 

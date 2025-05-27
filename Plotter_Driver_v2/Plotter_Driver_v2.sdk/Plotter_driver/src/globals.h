@@ -1,6 +1,12 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
+#include <stdint.h>
+#include <stddef.h>
+
 #define SCALE (1000.f/69.f)   	// a ratio of steps/millimeter
 #define MOTOR_COOLDOWN_FASTEST 30000
-#define MOTOR_COOLDOWN_DEFAULT 70000
+#define MOTOR_COOLDOWN_DEFAULT 100000
 #define MOTOR_COOLDOWN_HOMING 120000
 #define SERVO_DELAY 30000000
 
@@ -21,10 +27,15 @@
 
 #define PI32 3.1415926535897932384626433f
 
+typedef uint8_t u8;
+
 typedef int32_t s32;
 typedef uint32_t u32;
 typedef u32 b32;
 typedef float f32;
+
+typedef size_t usize;
+typedef ptrdiff_t ssize;
 
 #ifndef true
 #define true (1)
@@ -34,29 +45,36 @@ typedef float f32;
 #define false (0)
 #endif
 
+#define Min(a,b) ((a) < (b) ? (a) : (b))
 #define Abs(x) ((x) < 0 ? -(x) : (x))
 #define ArrayCount(a) (sizeof(a)/sizeof(*(a)))
 
-#define VecOp(a, b, op) ((Vec2){(a).x op (b).x, (a).y op (b).y})
+#define V2OP(a, b, op) ((v2){(a).x op (b).x, (a).y op (b).y})
 
 extern u32 motor_state;
 
-typedef struct Vec2
+typedef struct v2
 {
 	f32 x, y;
-} Vec2;
+} v2;
 
-typedef struct Mat2
+typedef struct m2
 {
-	Vec2 row[2];
-} Mat2;
+	v2 row[2];
+} m2;
 
 typedef struct Context
 {
-	Vec2 current_pos;
+	v2 current_pos;
 	u32 cooldown_timer;
-	Mat2 m;
+	m2 m;
 } Context;
+
+typedef struct String
+{
+	usize length;
+	u8 *data;
+} String;
 
 extern Context context;
 
@@ -71,17 +89,21 @@ b32 get_pen_state(void);
 void set_pen_state(b32 down);
 void step_motors(b32 a_dir, b32 b_dir, b32 a_step, b32 b_step);
 void move_motors(b32 a_dir, b32 b_dir, u32 a_steps, u32 b_steps);
-void move_motors_v(Vec2 motion);
+void move_motors_v(v2 motion);
 void home_motors(void);
 
-Mat2 mat2_scale(f32 scale);
-Mat2 mat2_rot(f32 angle);
-Mat2 mat2_transpose(Mat2 m);
-Mat2 mat2_mul(Mat2 a, Mat2 b);
-Vec2 mat2_vec2_mul(Mat2 m, Vec2 v);
+m2 m2_scale(f32 scale);
+m2 m2_rot(f32 angle);
+m2 m2_transpose(m2 m);
+m2 m2_mul(m2 a, m2 b);
+v2 m2_v2_mul(m2 m, v2 v);
 
-Vec2 vec2_sub(Vec2 a, Vec2 b);
-Vec2 vec2_add(Vec2 a, Vec2 b);
-Vec2 vec2_mul(Vec2 a, Vec2 b);
-f32 vec2_sum(Vec2 a);
+v2 v2_sub(v2 a, v2 b);
+v2 v2_add(v2 a, v2 b);
+v2 v2_mul(v2 a, v2 b);
+f32 v2_sum(v2 a);
 
+usize cstr_len(char *Str);
+usize string_cmp(String a, String b);
+
+#endif
