@@ -25,32 +25,32 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 ELFSIZE += \
-Plotter_driver.elf.size \
+Plotter_Driver.elf.size \
 
 
 # All Target
 all: pre-build main-build
 
 # Main-build Target
-main-build: Plotter_driver.elf secondary-outputs
+main-build: Plotter_Driver.elf secondary-outputs
 
 # Tool invocations
-Plotter_driver.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
+Plotter_Driver.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM v7 gcc linker'
-	arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../Plotter_driver_bsp/ps7_cortexa9_0/lib -o "Plotter_driver.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "Plotter_Driver.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-Plotter_driver.elf.size: Plotter_driver.elf
+Plotter_Driver.elf.size: Plotter_Driver.elf
 	@echo 'Invoking: ARM v7 Print Size'
-	arm-none-eabi-size Plotter_driver.elf  |tee "Plotter_driver.elf.size"
+	arm-none-eabi-size Plotter_Driver.elf  |tee "Plotter_Driver.elf.size"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(S_UPPER_DEPS)$(C_DEPS)$(ELFSIZE) Plotter_driver.elf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(S_UPPER_DEPS)$(C_DEPS)$(ELFSIZE) Plotter_Driver.elf
 	-@echo ' '
 
 pre-build:

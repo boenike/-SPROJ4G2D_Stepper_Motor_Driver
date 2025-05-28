@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------
 -- Educational institution: SDU Sonderborg 
--- Engineer: Bence Toth
--- Date: 20.05.2025
+-- Author: Bence Toth
+-- Date: 28.05.2025
 -- Design Name: SPROJEE4G2D Plotter Driver PL Top level file
 -- Project Name: SPROJ4EEG2D - 2D Plotter
 -- Target Device: Digilent Zynq ZedBoard Development kit

@@ -1,6 +1,6 @@
 -- This file describes the PWM signal generation for driving the Servo Motor
 -- Author: Bence Toth
--- Last modified: 20.05.2025
+-- Last modified: 28.05.2025
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -19,11 +19,11 @@ end Servo_PWM_Gen;
 
 architecture Behavioral of Servo_PWM_Gen is
     constant PERIOD : integer := 2000000;  -- 200us total period
-    constant  MAX_POS : integer := 250000;  -- pulse width for 180 degree angle
     signal CTR : integer range 0 to PERIOD := (PERIOD-1);
-    signal POS_SEL : integer range 0 to MAX_POS := POS_UP;
+    signal POS_SEL : integer range 0 to POS_UP := POS_UP;
     
     begin
+        -- Used to select the Servo motor's position (up/down)
         Pos_Selector: process (POS) is
             begin
                 case POS is
@@ -35,6 +35,7 @@ architecture Behavioral of Servo_PWM_Gen is
                 end case;
         end process Pos_Selector;
 
+        -- Used to generate the 20ms period output signal
         Period_Gen: process(GCK, POS_SEL) is
             begin
                 if rising_edge(GCK) then
@@ -46,6 +47,7 @@ architecture Behavioral of Servo_PWM_Gen is
                 end if;
         end process Period_Gen;
 
+        -- Used to generate the required Duty Cycle corresponding to the selected position
         Duty_Cycle_Gen: process (CTR) is
             begin
                 if (CTR = 0) then

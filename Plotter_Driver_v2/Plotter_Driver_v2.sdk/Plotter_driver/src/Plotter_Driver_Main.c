@@ -7,19 +7,60 @@
 #include "xparameters.h"
 #include "xil_io.h"
 #include "globals.h"
+#include "gcode.h"
+
 
 Context context = {0};
 
-Vec2 art[] = {
-	(Vec2){0,0},
-	(Vec2){0,50},
-	(Vec2){50,50},
-	(Vec2){50,150},
-	(Vec2){100,150},
-	(Vec2){100,50},
-	(Vec2){150,50},
-	(Vec2){150,0},
-	(Vec2){0,0},
+v2 art[] = {
+	(v2){0,0},
+	(v2){0,50},
+	(v2){50,50},
+	(v2){50,150},
+	(v2){100,150},
+	(v2){100,50},
+	(v2){150,50},
+	(v2){150,0},
+	(v2){0,0},
+};
+
+typedef struct Point
+{
+	v2 pos;
+	b32 pen;
+} Point;
+
+Point art2[] = {
+		{{20, 0}, 0},
+		{{10, 10}, 1},
+		{{10, 20}, 1},
+		{{20, 30}, 1},
+		{{30, 30}, 1},
+		{{40, 20}, 1},
+		{{40, 100}, 1},
+		{{50, 110}, 1},
+		{{60, 110}, 1},
+		{{70, 100}, 1},
+		{{70, 20}, 1},
+		{{80, 30}, 1},
+		{{90, 30}, 1},
+		{{100, 20}, 1},
+		{{100, 10}, 1},
+		{{90, 0}, 1},
+		{{20, 0,}, 1},
+
+//		{{10, 10}, 0},
+//		{{0, 10}, 1},
+//		{{20, 20}, 0},
+//		{{20, 30}, 1},
+//		{{30, 20}, 0},
+//		{{30, 30}, 1},
+//		{{80, 20}, 0},
+//		{{80, 30}, 1},
+//		{{90, 20}, 0},
+//		{{90, 30}, 1},
+//		{{100, 10}, 0},
+//		{{110, 10}, 1},
 };
 
 b32 pens[] = {
@@ -31,97 +72,89 @@ b32 pens[] = {
 	1,
 	1,
 	1,
-	0,
+	1,
 };
+
+int offset = 0;
+char line[4096];
+
+int read_line()
+{
+	char c;
+
+	offset = 0;
+
+	do
+	{
+		c = fgetc(stdin);
+		line[offset++] = c;
+	} while (c != '\n' && c != '\r');
+	line[offset] = 0;
+
+	return offset;
+}
+
+Tokenizer t = {0};
 
 int main(void)
 {
     init_platform();
+
     enable_motors(true);
+    set_pen_state(false);
 
     set_speed_max();
 
     fflush(stdin);
 
-    /*
-    f32 current_angle = 0;
-    f32 angle_step = (PI32*2)/2000;
-    f32 radius = 1000;
-    */
+    m2 scale = m2_scale(SCALE);
+    m2 rot = m2_rot(PI32/4);
 
-    Mat2 scale = mat2_scale(SCALE);
-    scale.row[1].y *= -1;
-    Mat2 rot = mat2_rot(PI32/4);
+    context.m = m2_mul(scale, rot);
 
-    context.m = mat2_mul(scale, rot);
+    home_motors();
 
-    //u32 ctr = 0, en_state = 1;
+#define mm(x, y) move_motors_v(m2_v2_mul(context.m, (v2){(x), (y)}))
 
-#define mm(x, y) move_motors_v(mat2_vec2_mul(context.m, (Vec2){(x), (y)}))
-
-    while(1)
+    while (1)
     {
-    	set_pen_state(false);
-    	home_motors();
-
-    	for (u32 i = 0; i < ArrayCount(art); ++i)
+        int cmd_len = 0;
+    	printf("a");
+    	fflush(stdout);
+    	if ((cmd_len = read_line()))
     	{
-    		set_pen_state(pens[i]);
-    		move_motors_v(mat2_vec2_mul(context.m, vec2_sub(art[i], context.current_pos)));
-    		context.current_pos = art[i];
+    		t.i = 0;
+    		t.src = (String){.length=cmd_len, .data=(u8*)line};
+    		Command cmd = parse_command(&t);
+
+            switch (cmd.type)
+            {
+                case Command_Move: {
+                    if (cmd.pen_state_changed) set_pen_state(cmd.pen_state);
+                    v2 motion = v2_sub(cmd.motion, context.current_pos);
+                    v2 motion_t = m2_v2_mul(context.m, motion);
+                    move_motors_v(motion_t);
+                    context.current_pos = cmd.motion;
+                } break;
+                case Command_Home: {
+                    home_motors();
+                } break;
+                case Command_Set_Pen_State: {
+                    set_pen_state(cmd.pen_state); 
+                } break;
+                case Command_End: {
+                    set_pen_state(false);
+                    home_motors();
+                    enable_motors(false);
+                } break;
+            }
     	}
-
-    	enable_motors(false);
-
-    	while(1);
-
-    	/*while (1)
-    	{
-			mm(100, 0);
-			mm(-100, 0);
-
-			mm(0, 100);
-			mm(0, -100);
-
-			mm(100, 100);
-			mm(-100, 100);
-			mm(-100, -100);
-			mm(100, -100);
-
-			// Short test of EN
-			ctr++;
-			if (2 == ctr) {
-				ctr = 0;
-				en_state = !en_state;
-				motor_state = en_state > 0 ? motor_state | MOTOR_ENABLE_BIT : motor_state & ~MOTOR_ENABLE_BIT;
-				MOTOR_BASE[0] = motor_state;
-			}
-    	}*/
     }
 
+    
+    //while(1);
+
 #undef mm
-//    while (1)
-//    {
-//    	f32 new_x = cos(current_angle)*radius;
-//    	f32 new_y = sin(current_angle)*radius;
-//
-//    	Vec2 new_pos = {new_x, new_y};
-//
-//    	Vec2 current_pos_t = mat2_vec2_mul(m, context.current_pos);
-//    	Vec2 new_pos_t = mat2_vec2_mul(m, new_pos);
-//
-//    	Vec2 motion = vec2_sub(new_pos_t, current_pos_t);
-//    	context.current_pos = new_pos;
-//
-//    	move_motors_v(motion);
-//
-//    	current_angle += angle_step;
-//    	if (current_angle > 2*PI32){
-//    		servo_down = !servo_down;
-//    		set_pen_state(servo_down);
-//    		current_angle -= 2*PI32;
-//    	}
-//    }
 
     cleanup_platform();
     return 0;
