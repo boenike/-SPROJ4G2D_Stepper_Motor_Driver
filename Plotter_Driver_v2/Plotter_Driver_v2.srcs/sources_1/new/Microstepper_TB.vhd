@@ -9,7 +9,6 @@ architecture Behavioral of Microstepper_TB is
 
     Component Microstepper_Top is
         Port ( GCK, EN, DIR, STP : in STD_LOGIC;
-               --NXT_FLAG : out STD_LOGIC;
                PCH_OUT : out STD_LOGIC_VECTOR (3 downto 0);
                NCH_OUT : out STD_LOGIC_VECTOR (3 downto 0)
         );
@@ -25,7 +24,6 @@ architecture Behavioral of Microstepper_TB is
     Signal EN: STD_LOGIC := '1' ;   -- Output Enabled
     Signal NCH_OUT : STD_LOGIC_VECTOR (3 downto 0);
     Signal PCH_OUT : STD_LOGIC_VECTOR (3 downto 0);
-    --Signal NXT_FLAG: STD_LOGIC ;
 
     begin
         uut: Microstepper_Top Port map
