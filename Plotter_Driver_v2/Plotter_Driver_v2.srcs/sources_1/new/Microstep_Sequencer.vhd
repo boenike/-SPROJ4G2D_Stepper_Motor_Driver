@@ -13,7 +13,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity Microstep_Sequencer is
     Generic(PULSE_DURATION: integer := 100_000);    -- 1ms in clock cycles (100MHz * 1ms)
     Port (
-        STP_EN : STD_LOGIC;     -- Enable STP input
+        STP_EN : in STD_LOGIC;     -- Enable STP input
         GCK : in STD_LOGIC;     -- 100MHz clock
         STP : in STD_LOGIC;     -- Step input
         UD : in STD_LOGIC;      -- Rising/Falling sequence
@@ -41,7 +41,7 @@ architecture Behavioral of Microstep_Sequencer is
     
     begin
     
-        Microstepping_Sequencer: process(GCK, EN, SETUP_TRIG) is
+        Microstepping_Sequencer: process(GCK, EN, SETUP_TRIG, STP_EN, STP, UD) is
             variable stp_prev : STD_LOGIC := '0';
             begin
                 if rising_edge(GCK) then

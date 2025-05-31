@@ -32,7 +32,7 @@ architecture Architectural of Microstepper_Top is
     end Component;
     
     Component Microstep_Sequencer is
-        Port ( STP_EN : STD_LOGIC;     -- Enable STP input
+        Port ( STP_EN : in STD_LOGIC;     -- Enable STP input
                GCK : in STD_LOGIC;     -- 100MHz clock
                STP : in STD_LOGIC;     -- Step input
                UD : in STD_LOGIC;      -- Rising/Falling sequence
@@ -43,34 +43,13 @@ architecture Architectural of Microstepper_Top is
                NCH : out STD_LOGIC  -- Output pulse for the N-channel MOSFET
         );
     end Component;
-    
-    --Component Next_Step_Enabler is
-        --Port ( GCK, STP : in STD_LOGIC;
-               --NXT_FLAG : out STD_LOGIC
-        --);
-    --end Component;
-    
-    --Component Step_Generator is
-        --Port (  GCK : in STD_LOGIC;
-                --EN : in STD_LOGIC;
-                --STP_OUT : out STD_LOGIC
-        --);
-    --end Component;
-    
-    --signal NXT_FLAG_sig : STD_LOGIC;
+
     signal SETUP_TRIG_sig : STD_LOGIC;
-    --signal CLK_to_STP : STD_LOGIC;
     signal UD_sig : STD_LOGIC_VECTOR(3 downto 0);
     signal STPEN_sig : STD_LOGIC_VECTOR(3 downto 0);
     signal SETUP_TYPE_sig : STD_LOGIC_VECTOR(3 downto 0);
 
     begin
-    
-        --GCK_to_STP: Step_Generator Port map
-        --(GCK=>GCK, EN=>EN, STP_OUT=>CLK_to_STP);
-    
-        --NXT_STP_EN: Next_Step_Enabler Port map
-        --(GCK=>GCK, STP=>CLK_to_STP, NXT_FLAG=>NXT_FLAG_sig);
         
         Microstep_Fetch: Microstep_Fetcher Port map
         (GCK=>GCK, STP=>STP, DIR=>DIR, EN=>EN, UD_OUT=>UD_sig, STPEN_OUT=>STPEN_sig,
