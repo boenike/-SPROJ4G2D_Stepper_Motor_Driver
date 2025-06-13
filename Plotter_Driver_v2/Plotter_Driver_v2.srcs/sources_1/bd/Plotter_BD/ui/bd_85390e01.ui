@@ -1,0 +1,39 @@
+{
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0.19  2019-03-26 bk=1.5019 VDI=41 GEI=35 GUI=JA:9.0 non-TLS-threadsafe
+#  -string -flagsOSRD
+preplace port DDR -pg 1 -lvl 5 -x 1340 -y 60 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 5 -x 1340 -y 90 -defaultsOSRD
+preplace port GCK_0 -pg 1 -lvl 0 -x 0 -y 490 -defaultsOSRD
+preplace port PWM_OUT_0 -pg 1 -lvl 5 -x 1340 -y 530 -defaultsOSRD
+preplace portBus LIMIT_SWITCHES_0 -pg 1 -lvl 0 -x 0 -y 730 -defaultsOSRD
+preplace portBus OUT_1_0 -pg 1 -lvl 5 -x 1340 -y 470 -defaultsOSRD
+preplace portBus OUT_2_0 -pg 1 -lvl 5 -x 1340 -y 500 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 1 -x 230 -y 140 -defaultsOSRD
+preplace inst proc_sys_reset_0 -pg 1 -lvl 1 -x 230 -y 390 -defaultsOSRD
+preplace inst Plotter_Interconnect_0 -pg 1 -lvl 3 -x 910 -y 640 -defaultsOSRD
+preplace inst ps7_0_axi_periph -pg 1 -lvl 2 -x 600 -y 610 -defaultsOSRD
+preplace inst Plotter_Driver_v2_Top_0 -pg 1 -lvl 4 -x 1190 -y 500 -defaultsOSRD
+preplace netloc processing_system7_0_FCLK_CLK0 1 0 3 20 280 450 730 750J
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 0 2 30 290 440
+preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 2 440 750 760J
+preplace netloc LIMIT_SWITCHES_0_1 1 0 3 NJ 730 430J 740 740J
+preplace netloc GCK_0_1 1 0 4 NJ 490 NJ 490 NJ 490 NJ
+preplace netloc Plotter_Driver_v2_Top_0_OUT_1 1 4 1 1320J 470n
+preplace netloc Plotter_Driver_v2_Top_0_OUT_2 1 4 1 NJ 500
+preplace netloc Plotter_Driver_v2_Top_0_PWM_OUT 1 4 1 1320J 520n
+preplace netloc Plotter_Interconnect_0_MOTOR_IN 1 3 1 1060 510n
+preplace netloc processing_system7_0_M_AXI_GP0 1 1 1 460 120n
+preplace netloc processing_system7_0_FIXED_IO 1 1 4 460J 90 NJ 90 NJ 90 NJ
+preplace netloc processing_system7_0_DDR 1 1 4 NJ 60 NJ 60 NJ 60 NJ
+preplace netloc ps7_0_axi_periph_M00_AXI 1 2 1 N 610
+levelinfo -pg 1 0 230 600 910 1190 1340
+pagesize -pg 1 -db -bbox -sgen -200 0 1480 760
+"
+}
+{
+   "da_axi4_cnt":"1",
+   "da_board_cnt":"1",
+   "da_clkrst_cnt":"2",
+   "da_ps7_cnt":"1"
+}
